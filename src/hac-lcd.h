@@ -50,13 +50,19 @@ void deniedScreen() {
 }
 
 void connectionLossScreen() {
-    lcd.setCursor(0, 0); lcd.print("    Uxpected    ");
+    lcd.setCursor(0, 0); lcd.print("   Unexpected   ");
     lcd.setCursor(0, 1); lcd.print("Connection Loss ");
 }
 
 void unknownCardScreen() {
     lcd.setCursor(0, 0); lcd.print("    New Card    ");
     lcd.setCursor(0, 1); lcd.print("    Detected    ");
+}
+
+void unconnectedToBroker(){
+    lcd.setCursor(0, 0); lcd.print("     Can't      ");
+    lcd.setCursor(0, 1); lcd.print("Connect toServer");
+    delay(1000);
 }
 
 void certifiedScreen(String timeLeft, String powerMeter) {

@@ -20,6 +20,7 @@ void loop(){
 		if (!client.connected()) {
 			connect();
 			connectedToRaspi = 0;
+			//if (connectedToRaspi == 0) unconnectedToBroker();
 		}
 		if (!raspiConnected()) {
 			connectionLossScreen();
@@ -45,8 +46,11 @@ void loop(){
 			float i = pzem.current(ip);
 			float p = pzem.power(ip);
 			float e = pzem.energy(ip) - startEnergy;
+			float pf = (p/(v*i));
 			char buffer4[4];
-			String energys = dtostrf(e , 4, 0, buffer4);
+			char buffer5[4];
+			String powerFactor = dtostrf(pf , 4, 0, buffer4);
+			String energys = dtostrf(e , 4, 0, buffer5);
 			// certifiedScreen(String(remainingTime), energys);
 			pzemScreen(String(remainingTime), v, i, p, e);
 			if(currentMillis - minuteMillis >= 60000){
