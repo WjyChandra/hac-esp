@@ -52,7 +52,7 @@ void loop(){
 			String powerFactor = dtostrf(pf , 4, 0, buffer4);
 			String energys = dtostrf(e , 4, 0, buffer5);
 			// certifiedScreen(String(remainingTime), energys);
-			pzemScreen(String(remainingTime), v, i, p, e);
+			pzemScreen(String(remainingTime), v, i, p, e, pf);
 			if(currentMillis - minuteMillis >= 60000){
 				String topicEnergy = String(machine_id) + "/state/usage";
 				client.publish(topicEnergy, energys, false, 2);

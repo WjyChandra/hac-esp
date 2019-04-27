@@ -70,13 +70,14 @@ void certifiedScreen(String timeLeft, String powerMeter) {
   lcd.setCursor(0, 1); lcd.print("Energy(Wh):" + powerMeter);
 }
 
-void pzemScreen(String timeLeft, float v, float i, float p, float e) {
+void pzemScreen(String timeLeft, float v, float i, float p, float e, float pf) {
     char buffer4[4];
     String voltages = dtostrf(v , 3, 1, buffer4);
     String currents = dtostrf(i , 2, 2, buffer4);
     String powers = dtostrf(p , 3, 1, buffer4);
-    String energys = dtostrf(e , 4, 0, buffer4);
+    String energys = dtostrf(e , 2, 0, buffer4);
+    String powerFactor = dtostrf(pf , 3, 2, buffer4);
 
-    lcd.setCursor(0, 0); lcd.print(timeLeft + " V:" + voltages + " I:" + currents);
-    lcd.setCursor(0, 1); lcd.print("P:" + powers + " E:" + energys);
+    lcd.setCursor(0, 0); lcd.print(timeLeft + "V" + voltages + "I" + currents);
+    lcd.setCursor(0, 1); lcd.print("P" + powers + "E" + energys + "F" + powerFactor);
 }
