@@ -39,12 +39,12 @@ void loop(){
 				strcpy(cur_carduid, carduid);
 				printDebug(carduid);
 				String topic = String(machine_id) + "/state/carduid";
-				client.publish(topic, carduid, false, mqtt_qos);
+				client.publish(topic, carduid, retained, mqtt_qos);
 			}
 			// if (millis() - debugMillis >= 5000) {
 			// 	String top = "debug";
 			// 	String msg = "not active";
-			// 	client.publish(top, msg, false, mqtt_qos);
+			// 	client.publish(top, msg, retained, mqtt_qos);
 			// 	debugMillis = millis();
 			// }
 		}
@@ -70,7 +70,7 @@ void loop(){
 
 			if(currentMillis - minuteMillis >= 60000){
 				String topicEnergy = String(machine_id) + "/state/usage";
-				client.publish(topicEnergy, energys, false, mqtt_qos);
+				client.publish(topicEnergy, energys, retained, mqtt_qos);
 				minuteMillis = currentMillis;
 			}
 
@@ -85,7 +85,7 @@ void loop(){
 			// if (millis() - debugMillis >= 5000) {
 			// 	String top = "debug";
 			// 	String msg = "active";
-			// 	client.publish(top, msg, false, mqtt_qos);
+			// 	client.publish(top, msg, retained, mqtt_qos);
 			// 	debugMillis = millis();
 			// }
 		}
@@ -94,14 +94,14 @@ void loop(){
 		if (currentMillis - startMillis >= interval || stopButton == 1) {
 			// String top = "debug";
 			// String msg = "stop pin";
-			// client.publish(top, msg, false, mqtt_qos);
+			// client.publish(top, msg, retained, mqtt_qos);
 
 			endScreen();
 			float e = pzem.energy(ip) - startEnergy;
 			char buffer4[10];
 			String energys = dtostrf(e , 4, 0, buffer4);
 			String topicEnergy = String(machine_id) + "/state/stop";
-			client.publish(topicEnergy, energys, false, mqtt_qos);
+			client.publish(topicEnergy, energys, retained, mqtt_qos);
 			digitalWrite(SSR_PIN, LOW);
 			activate = 0;
 			lcdBlink = 0;
@@ -123,13 +123,13 @@ void loop(){
 
 			// String top = "debug";
 			// String msg = "raspi not connected " + String(failToConnect);
-			// client.publish(top, msg, false, mqtt_qos);
+			// client.publish(top, msg, retained, mqtt_qos);
 
 			float e = pzem.energy(ip) - startEnergy;
 			char buffer4[10];
 			String energys = dtostrf(e , 4, 0, buffer4);
 			String topicStop = String(machine_id) + "/state/stop";
-			client.publish(topicStop, energys, false, mqtt_qos);
+			client.publish(topicStop, energys, retained, mqtt_qos);
 
 			activate = 0;
 			cur_carduid[0] = '\0';
