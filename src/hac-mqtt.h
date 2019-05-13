@@ -21,7 +21,10 @@ const char* mqtt_server = "192.168.2.110";
 
 const int mqtt_port = 1883;
 const int mqtt_qos = 2;
-const bool retained = false;
+const bool mqtt_retained = false;
+const int mqtt_keepalive = 60;
+const bool mqtt_cleansession = false;
+const int mqtt_timeout = 1000;
 
 WiFiClient net;
 MQTTClient client;
@@ -48,7 +51,7 @@ void connectRaspi() {
 	// printDebug("Waiting for Raspi...");
 	String topics = String(machine_id) + "/state/connect";
 	String msg = String(failToConnect);
-	client.publish(topics, msg, retained, mqtt_qos);
+	client.publish(topics, msg, mqtt_retained, mqtt_qos);
 	raspiResponse = 0;
 	raspiMillis = millis();
 	if (firstRaspiConnect) firstRaspiConnect = 0;
@@ -130,6 +133,6 @@ void setupMQTT() {
 	// WiFi.begin(ssid);
 	client.begin(mqtt_server, mqtt_port, net);
 	client.onMessage(messageReceived);
-	client.setOptions(60, false, 1000);
+	client.setOptions(mqtt_keepalive, mqtt_cleansession, mqtt_timeout);
 	connect();
 }
