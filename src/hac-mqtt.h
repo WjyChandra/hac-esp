@@ -1,38 +1,46 @@
 #include <ESP8266WiFi.h>
 #include <MQTT.h>
 
-const char* ssid        = "Android AP";
-const char* password    = "abcdefgh";
-// const char* ssid        = "MasterBulb";
-// const char* password    = "celab123";
-const char* mqtt_server = "192.168.43.215";
+const char* ssid        = "E1000-Test";
+const char* password    = "856427319";
+const char* mqtt_server = "192.168.2.110";
 const int   mqtt_port   = 1883;
+
+const int mqtt_qos = 1;
+const bool mqtt_retain = false;
+const int mqtt_keepAlive = 60;
+const bool mqtt_cleanSession = true;
+const int mqtt_timeout = 1000;
 
 WiFiClient net;
 MQTTClient client;
 
-void connect() {
-	printDebug("Checking WiFi...");
-	while (WiFi.status() != WL_CONNECTED) {
-		printDebug("...");
-		delay(1000);
+void mqttPublish(String topic, String payload, int n=5) {
+	for (int i = 0; i < n; i++)
+		client.publish(topic, payload, mqtt_retain, mqtt_qos);
+}
+
+void connect(unsigned long timeout=2000) {
+	unsigned long connectMillis = millis();
+	printDebug("Connecting to WiFi...");
+	while (WiFi.status() != WL_CONNECTED && (millis()-connectMillis < timeout)) {
+		delay(400);
 	}
-	printDebug("WiFi connected!"); // delay(1000);
-	while (!client.connect(machine_name)) {
-		printDebug("Connecting to MQTT Broker");
-		delay(1000);
+	printDebug("Connecting to MQTT Broker...");
+	while (!client.connect(machine_name) && (millis()-connectMillis < timeout)) {
+		delay(400);
 	}
-	printDebug("MQTT connected!"); // delay(1000);
 
 	String topic = String(machine_id) + "/command/#";
-  	client.subscribe(topic);
+  	client.subscribe(topic, mqtt_qos);
 	printDebug("sub to " + topic);
 }
 
 void connectRaspi() {
-	// printDebug("Waiting for Raspi...");
 	String topics = String(machine_id) + "/state/connect";
-	client.publish(topics, "?", false, 2);
+	// client.publish(topics, "?", mqtt_retain, mqtt_qos);
+	String payload = String(failToConnect);
+	mqttPublish(topics, payload);
 	raspiResponse = 0;
 	raspiMillis = millis();
 	if (firstRaspiConnect) firstRaspiConnect = 0;
@@ -42,7 +50,7 @@ bool raspiConnected() {
 	unsigned long curRaspiMillis = millis();
 	if (firstRaspiConnect) {
 		connectRaspi();
-		return false;
+		return true;
 	}
 	if (!connectedToRaspi) {
 		if (curRaspiMillis-raspiMillis > raspiInterval) connectRaspi();
@@ -51,8 +59,15 @@ bool raspiConnected() {
 	if (connectedToRaspi){
 		if (curRaspiMillis-raspiMillis > raspiInterval) {
 			if (raspiResponse == 0) {
-				connectedToRaspi = 0;
-				return false;
+				failToConnect++;
+				if (failToConnect >= 5) {
+					failToConnect = 0;
+					connectedToRaspi = 0;
+					return false;
+				}
+			}
+			else {
+				failToConnect = 0;
 			}
 			connectRaspi();
 		}
@@ -94,13 +109,21 @@ void messageReceived(String &topic, String &payload) {
 	topicRef = String(machine_id) + "/command/connect";
 	if (topicRef == topic){
 		raspiResponse = 1;
+		raspiMillis = millis();
 		connectedToRaspi = 1;
+		failToConnect = 0;
 	}
+	raspiResponse = 1;
+	raspiMillis = millis();
+	connectedToRaspi = 1;
+	failToConnect = 0;
 }
 
 void setupMQTT() {
 	WiFi.begin(ssid, password);
 	client.begin(mqtt_server, mqtt_port, net);
+	client.setOptions(mqtt_keepAlive, mqtt_cleanSession, mqtt_timeout);
 	client.onMessage(messageReceived);
-	connect();
+	connect(3000);
+	raspiConnected();
 }
