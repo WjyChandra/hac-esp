@@ -36,7 +36,9 @@ void lcdPrint(String s) {
 
 void welcomeScreen(){
   lcd.setCursor(0, 0); lcd.print("    Welcome     ");
-  lcd.setCursor(0, 1); lcd.print("   I'm Online   ");
+  // lcd.setCursor(0, 1); lcd.print("   I'm Online   ");
+  String s = "   I'm Online "+String(failToConnect);
+  lcd.setCursor(0, 1); lcd.print(s);
 }
 
 void endScreen(){
@@ -70,13 +72,14 @@ void certifiedScreen(String timeLeft, String powerMeter) {
   lcd.setCursor(0, 1); lcd.print("Energy(Wh):" + powerMeter);
 }
 
-void pzemScreen(String timeLeft, float v, float i, float p, float e) {
+void pzemScreen(String timeLeft, float v, float i, float p, float e, int failToConnect) {
     char buffer4[4];
     String voltages = dtostrf(v , 3, 1, buffer4);
     String currents = dtostrf(i , 2, 2, buffer4);
     String powers = dtostrf(p , 3, 1, buffer4);
     String energys = dtostrf(e , 4, 0, buffer4);
+    String failCount = String(failToConnect);
 
     lcd.setCursor(0, 0); lcd.print(timeLeft + " V:" + voltages + " I:" + currents);
-    lcd.setCursor(0, 1); lcd.print("P:" + powers + " E:" + energys);
+    lcd.setCursor(0, 1); lcd.print("P:" + powers + " E:" + energys + failCount);
 }
