@@ -15,7 +15,7 @@ const int mqtt_timeout = 1000;
 WiFiClient net;
 MQTTClient client;
 
-void mqttPublish(String topic, String payload, int n=1) {
+void mqttPublish(String topic, String payload, int n=5) {
 	for (int i = 0; i < n; i++)
 		client.publish(topic, payload, mqtt_retain, mqtt_qos);
 }
@@ -44,7 +44,8 @@ void connect(unsigned long timeout=3000) {
 void connectRaspi() {
 	String topics = String(machine_id) + "/state/connect";
 	// client.publish(topics, "?", mqtt_retain, mqtt_qos);
-	String payload = String(failToConnect);
+	connect_ID++; 
+	String payload = String(connect_ID);
 	mqttPublish(topics, payload);
 	raspiResponse = 0;
 	raspiMillis = millis();

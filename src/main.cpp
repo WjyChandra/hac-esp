@@ -8,6 +8,8 @@ void setup() {
 		setupRFID();
 		setupPZEM();
 		setupSSR();
+		String topic = String(machine_id) + "/state/resetconnect";
+		mqttPublish(topic,"", 1);
 }
 
 char cur_carduid[20] = {};
@@ -39,7 +41,7 @@ void loop(){
 			if(currentMillis - minuteMillis >= 60000){
 				String topicEnergy = String(machine_id) + "/state/usage";
 				// client.publish(topicEnergy, energys, mqtt_retain, mqtt_qos);
-				mqttPublish(topicEnergy, energys);
+				mqttPublish(topicEnergy, energys, 1);
 				minuteMillis = currentMillis;
 			}
 			if (remainingTime <= 3){

@@ -1,8 +1,8 @@
 #include <SPI.h>
 #include <Wire.h>
 
-const int machine_id = 2;
-const char* machine_name = "machine2";
+const int machine_id = 1;
+const char* machine_name = "machine1";
 const bool DEBUG = true;
 const bool LCDDEBUG = true;
 bool activate = 0; // value from cloud to ack SSR pin D8
@@ -15,6 +15,7 @@ int lcdBacklight = 255;
 float startEnergy;
 bool connectedToRaspi = 0, raspiResponse = 0;
 int failToConnect = 0;
+int connect_ID = 0;
 
 
 #define MFRC522_SS_PIN  D4
