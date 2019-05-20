@@ -9,31 +9,36 @@ const int   mqtt_port   = 1883;
 const int mqtt_qos = 1;
 const bool mqtt_retain = false;
 const int mqtt_keepAlive = 60;
-const bool mqtt_cleanSession = true;
+const bool mqtt_cleanSession = true; //changed on 15/05/2019 from true to false
 const int mqtt_timeout = 1000;
 
 WiFiClient net;
 MQTTClient client;
 
-void mqttPublish(String topic, String payload, int n=5) {
+void mqttPublish(String topic, String payload, int n=1) {
 	for (int i = 0; i < n; i++)
 		client.publish(topic, payload, mqtt_retain, mqtt_qos);
 }
 
-void connect(unsigned long timeout=2000) {
+void connect(unsigned long timeout=3000) {
 	unsigned long connectMillis = millis();
-	printDebug("Connecting to WiFi...");
+
 	while (WiFi.status() != WL_CONNECTED && (millis()-connectMillis < timeout)) {
-		delay(400);
+		printDebug("Connecting to WiFi...");
+		delay(1000);
 	}
-	printDebug("Connecting to MQTT Broker...");
 	while (!client.connect(machine_name) && (millis()-connectMillis < timeout)) {
-		delay(400);
+		printDebug("Connecting to MQTT Broker...");
+		delay(1000);
 	}
 
-	String topic = String(machine_id) + "/command/#";
+	// String topic = String(machine_id) + "/command/#";
+  	// client.subscribe(topic, mqtt_qos);
+
+	String topic = String(machine_id) + "/command/action";
   	client.subscribe(topic, mqtt_qos);
-	printDebug("sub to " + topic);
+	topic = String(machine_id) + "/command/connect";
+  	client.subscribe(topic, mqtt_qos);
 }
 
 void connectRaspi() {
@@ -77,7 +82,7 @@ bool raspiConnected() {
 }
 
 void messageReceived(String &topic, String &payload) {
-	String debugMessage = "incoming " + payload;
+	String debugMessage = "in " + topic + ":" + payload;
 	printDebug(debugMessage);
 
 	String topicRef = String(machine_id) + "/command/action";
@@ -124,6 +129,6 @@ void setupMQTT() {
 	client.begin(mqtt_server, mqtt_port, net);
 	client.setOptions(mqtt_keepAlive, mqtt_cleanSession, mqtt_timeout);
 	client.onMessage(messageReceived);
-	connect(3000);
+	connect(5000);
 	raspiConnected();
 }

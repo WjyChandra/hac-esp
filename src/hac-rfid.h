@@ -17,7 +17,6 @@ bool getCardUID(char carduid[]){
     if (!rfid.PICC_IsNewCardPresent()) return false;
     // Select one of the cards
     if (!rfid.PICC_ReadCardSerial()) return false;
-
     for (byte i = 0; i < rfid.uid.size; i++) {
         carduid[i*2] = "0123456789ABCDEF"[rfid.uid.uidByte[i]/16];
         carduid[i*2+1] = "0123456789ABCDEF"[rfid.uid.uidByte[i]%16];

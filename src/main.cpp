@@ -17,32 +17,8 @@ void loop(){
 	if (!client.connected()) connect();
 
 	char carduid[20];
-	if (activate == 0) {
-		digitalWrite(SSR_PIN, LOW);
-		if (lcdBlink == 1) {
-			lcdBlink = 0;
-			lcdBacklight = 255;
-			lcd.setBacklight(lcdBacklight);
-		}
-		if (cur_carduid[0] != '\0')
-			memset(cur_carduid, 0, sizeof cur_carduid);
 
-		if (!raspiConnected()) {
-			connectionLossScreen();
-		}
-		else {
-			welcomeScreen();
-			if (getCardUID(carduid) && strcmp(carduid, cur_carduid) != 0) {
-				strcpy(cur_carduid, carduid);
-				printDebug(carduid);
-				String topic = String(machine_id) + "/state/carduid";
-				// client.publish(topic, carduid, mqtt_retain, mqtt_qos);
-				mqttPublish(topic, carduid);
-			}
-		}
-
-	}
-	else if (activate == 1 ){
+	if (activate == 1 ){
 		digitalWrite(SSR_PIN, HIGH);
 		currentMillis = millis();
 		int elapseTime = (currentMillis - startMillis)/60000;
@@ -58,7 +34,7 @@ void loop(){
 			String powerFactor = dtostrf(pf , 4, 0, buffer);
 			String energys = dtostrf(e , 4, 0, buffer);
 			// certifiedScreen(String(remainingTime), energys);
-			pzemScreen(String(remainingTime), v, i, p, e);
+			pzemScreen(String(remainingTime), v, i, p, e, failToConnect);
 
 			if(currentMillis - minuteMillis >= 60000){
 				String topicEnergy = String(machine_id) + "/state/usage";
@@ -82,7 +58,7 @@ void loop(){
 			String energys = dtostrf(e , 4, 0, buffer);
 			String topicEnergy = String(machine_id) + "/state/stop";
 			// client.publish(topicEnergy, energys, mqtt_retain, mqtt_qos);
-			mqttPublish(topicEnergy, energys);
+			mqttPublish(topicEnergy, energys, 1);
 			digitalWrite(SSR_PIN, LOW);
 			activate = 0;
 			if (lcdBlink == 1) {
@@ -108,9 +84,9 @@ void loop(){
 			}
 			while(!raspiConnected()) {
 				printDebug("reconnecting raspi");
+				delay(400);
 				if (!client.connected()) connect();
 				client.loop();
-				delay(400);
 			}
 			// client.publish(topicStop, energys, mqtt_retain, mqtt_qos);
 			mqttPublish(topicStop, energys);
@@ -131,4 +107,32 @@ void loop(){
 			lcdMillis = currentMillis;
 		}
 	}
+	else if (activate == 0) {
+		digitalWrite(SSR_PIN, LOW);
+		if (lcdBlink == 1) {
+			lcdBlink = 0;
+			lcdBacklight = 255;
+			lcd.setBacklight(lcdBacklight);
+		}
+		if (cur_carduid[0] != '\0')
+			memset(cur_carduid, 0, sizeof cur_carduid);
+
+		if (!raspiConnected()) {
+			connectionLossScreen();
+		}
+		else {
+			welcomeScreen();
+			if (getCardUID(carduid) && strcmp(carduid, cur_carduid) != 0) {
+				strcpy(cur_carduid, carduid);
+				printDebug(carduid);
+				String topic = String(machine_id) + "/state/carduid";
+				// client.publish(topic, carduid, mqtt_retain, mqtt_qos);
+				mqttPublish(topic, carduid, 1);
+				delay(100);
+			}
+		}
+
+	}
+
+
 }
