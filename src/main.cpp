@@ -35,8 +35,8 @@ void loop(){
 			char buffer[5];
 			String powerFactor = dtostrf(pf , 4, 0, buffer);
 			String energys = dtostrf(e , 4, 0, buffer);
-			// certifiedScreen(String(remainingTime), energys);
-			pzemScreen(String(remainingTime), v, i, p, e, failToConnect);
+			certifiedScreen(String(remainingTime), energys);
+			// pzemScreen(String(remainingTime), v, i, p, e, failToConnect);
 
 			if(currentMillis - minuteMillis >= 60000){
 				String topicEnergy = String(machine_id) + "/state/usage";
@@ -135,6 +135,5 @@ void loop(){
 		}
 
 	}
-
 
 }
