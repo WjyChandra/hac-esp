@@ -1,8 +1,8 @@
 #include <SPI.h>
 #include <Wire.h>
 
-const int machine_id = 2;
-const char* machine_name = "machine2";
+const int machine_id = 1;
+const char* machine_name = "machine1";
 const bool DEBUG = false;
 const bool LCDDEBUG = false;
 bool activate = 0; // value from cloud to ack SSR pin D8
