@@ -3,8 +3,8 @@
 
 const int machine_id = 1;
 const char* machine_name = "machine1";
-const bool DEBUG = true;
-const bool LCDDEBUG = true;
+const bool DEBUG = false;
+const bool LCDDEBUG = false;
 bool activate = 0; // value from cloud to ack SSR pin D8
 unsigned long currentMillis, startMillis, minuteMillis, interval = 1800000, previousMillis;
 unsigned long lcdMillis;

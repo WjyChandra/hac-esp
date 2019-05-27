@@ -44,7 +44,7 @@ void connect(unsigned long timeout=3000) {
 void connectRaspi() {
 	String topics = String(machine_id) + "/state/connect";
 	// client.publish(topics, "?", mqtt_retain, mqtt_qos);
-	connect_ID++; 
+	connect_ID++;
 	String payload = String(connect_ID);
 	mqttPublish(topics, payload);
 	raspiResponse = 0;
@@ -66,7 +66,7 @@ bool raspiConnected() {
 		if (curRaspiMillis-raspiMillis > raspiInterval) {
 			if (raspiResponse == 0) {
 				failToConnect++;
-				if (failToConnect >= 5) {
+				if (failToConnect >= 10) {
 					failToConnect = 0;
 					connectedToRaspi = 0;
 					return false;

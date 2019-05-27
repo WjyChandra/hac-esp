@@ -36,9 +36,9 @@ void lcdPrint(String s) {
 
 void welcomeScreen(){
   lcd.setCursor(0, 0); lcd.print("    Welcome     ");
-  // lcd.setCursor(0, 1); lcd.print("   I'm Online   ");
-  String s = "   I'm Online "+String(failToConnect);
-  lcd.setCursor(0, 1); lcd.print(s);
+  lcd.setCursor(0, 1); lcd.print("   I'm Online   ");
+  // String s = "   I'm Online " + String(failToConnect);
+  // lcd.setCursor(0, 1); lcd.print(s);
 }
 
 void endScreen(){
@@ -68,7 +68,7 @@ void unconnectedToBroker(){
 }
 
 void certifiedScreen(String timeLeft, String powerMeter) {
-  lcd.setCursor(0, 0); lcd.print("TimeLeft:" + timeLeft + "Min");
+  lcd.setCursor(0, 0); lcd.print("TimeLeft: " + timeLeft + "Min ");
   lcd.setCursor(0, 1); lcd.print("Energy(Wh):" + powerMeter);
 }
 
