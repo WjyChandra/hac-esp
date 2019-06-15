@@ -48,6 +48,8 @@ void loop(){
 				lcdBlink = 1;
 				if (getCardUID(carduid) && strcmp(carduid, cur_carduid) == 0){
 					lcdBlink = 0;
+					lcdBacklight = 255;
+					lcd.setBacklight(lcdBacklight);
 					startMillis = currentMillis;
 				}
 			}
@@ -58,9 +60,8 @@ void loop(){
 			float e = pzem.energy(ip) - startEnergy;
 			char buffer[5];
 			String energys = dtostrf(e , 4, 0, buffer);
-			String topicEnergy = String(machine_id) + "/state/stop";
-			// client.publish(topicEnergy, energys, mqtt_retain, mqtt_qos);
-			mqttPublish(topicEnergy, energys, 1);
+			String topicStop = String(machine_id) + "/state/stop";
+			mqttPublish(topicStop, energys);
 			digitalWrite(SSR_PIN, LOW);
 			activate = 0;
 			if (lcdBlink == 1) {
