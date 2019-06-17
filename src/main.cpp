@@ -121,7 +121,8 @@ void loop(){
 			memset(cur_carduid, 0, sizeof cur_carduid);
 
 		if (!raspiConnected()) {
-			connectionLossScreen();
+			if (isBooting) bootingScreen();
+			else connectionLossScreen();
 		}
 		else {
 			welcomeScreen();

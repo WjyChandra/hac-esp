@@ -118,6 +118,7 @@ void messageReceived(String &topic, String &payload) {
 		raspiMillis = millis();
 		connectedToRaspi = 1;
 		failToConnect = 0;
+		isBooting = 0;
 	}
 	raspiResponse = 1;
 	raspiMillis = millis();

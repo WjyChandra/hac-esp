@@ -34,6 +34,11 @@ void lcdPrint(String s) {
     }
 }
 
+void bootingScreen(){
+  lcd.setCursor(0, 0); lcd.print("   BOOTING UP   ");
+  lcd.setCursor(0, 1); lcd.print("     H A C      ");
+}
+
 void welcomeScreen(){
   lcd.setCursor(0, 0); lcd.print("    Welcome     ");
   lcd.setCursor(0, 1); lcd.print("   I'm Online   ");

@@ -1,12 +1,12 @@
 #include <SPI.h>
 #include <Wire.h>
 
-const int machine_id = 3;
-const char* machine_name = "machine3";
+const int machine_id = 1;
+const char* machine_name = "machine1";
 const bool DEBUG = false;
 const bool LCDDEBUG = false;
 bool activate = 0; // value from cloud to ack SSR pin D8
-unsigned long currentMillis, startMillis, minuteMillis, interval = 240000, previousMillis;
+unsigned long currentMillis, startMillis, minuteMillis, interval = 300000, previousMillis;
 unsigned long lcdMillis;
 unsigned long raspiMillis = 0, raspiInterval = 10000;
 bool firstRaspiConnect = 1;
@@ -16,6 +16,7 @@ float startEnergy;
 bool connectedToRaspi = 0, raspiResponse = 0;
 int failToConnect = 0;
 int connect_ID = 0;
+bool isBooting = 1;
 
 
 #define MFRC522_SS_PIN  D4
