@@ -21,6 +21,16 @@ void loop(){
 	char carduid[20];
 
 	if (activate == 1 ){
+		/*
+		// test code
+		if (!responseTimePrinted) {
+			responseTimePrinted = 1;
+			lcdPrint(String(millis()-readCardMillis));
+			delay(3000);
+		}
+		// test code
+		*/
+
 		digitalWrite(SSR_PIN, HIGH);
 		currentMillis = millis();
 		int elapseTime = (currentMillis - startMillis)/60000;
@@ -36,11 +46,9 @@ void loop(){
 			String powerFactor = dtostrf(pf , 4, 0, buffer);
 			String energys = dtostrf(e , 4, 0, buffer);
 			certifiedScreen(String(remainingTime), energys);
-			// pzemScreen(String(remainingTime), v, i, p, e, failToConnect);
 
 			if(currentMillis - minuteMillis >= 60000){
 				String topicEnergy = String(machine_id) + "/state/usage";
-				// client.publish(topicEnergy, energys, mqtt_retain, mqtt_qos);
 				mqttPublish(topicEnergy, energys, 1);
 				minuteMillis = currentMillis;
 			}
@@ -80,7 +88,7 @@ void loop(){
 			String energys = dtostrf(e , 4, 0, buffer);
 			String topicStop = String(machine_id) + "/state/stop";
 			digitalWrite(SSR_PIN, LOW);
-			// printDebug("reconnecting");
+
 			while(!client.connected()) {
 				printDebug("reconnecting broker");
 				connect();
@@ -91,7 +99,6 @@ void loop(){
 				if (!client.connected()) connect();
 				client.loop();
 			}
-			// client.publish(topicStop, energys, mqtt_retain, mqtt_qos);
 			mqttPublish(topicStop, energys);
 			activate = 0;
 			if (lcdBlink == 1) {
@@ -125,12 +132,28 @@ void loop(){
 			else connectionLossScreen();
 		}
 		else {
+			/*
+			// test code
+			if (!bootTimePrinted) {
+				lcdPrint(String(millis()));
+				delay(3000);
+				bootTimePrinted = 1;
+			}
+			// test code
+			*/
+
 			welcomeScreen();
 			if (getCardUID(carduid) && strcmp(carduid, cur_carduid) != 0) {
+				/*
+				// test code
+				readCardMillis = millis();
+				responseTimePrinted = 0;
+				// test code
+				*/
+
 				strcpy(cur_carduid, carduid);
 				printDebug(carduid);
 				String topic = String(machine_id) + "/state/carduid";
-				// client.publish(topic, carduid, mqtt_retain, mqtt_qos);
 				mqttPublish(topic, carduid, 1);
 				delay(100);
 			}

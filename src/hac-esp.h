@@ -18,6 +18,12 @@ int failToConnect = 0;
 int connect_ID = 0;
 bool isBooting = 1;
 
+/*
+// test code
+bool bootTimePrinted = 0, responseTimePrinted = 1;
+unsigned long readCardMillis = 0;
+*/
+
 
 #define MFRC522_SS_PIN  D4
 #define MFRC522_RST_PIN D3
