@@ -20,7 +20,7 @@ void loop(){
 
 	char carduid[20];
 
-	if (activate == 1 ){
+	if (activate == 1) {
 		/*
 		// test code
 		if (!responseTimePrinted) {
@@ -31,26 +31,30 @@ void loop(){
 		// test code
 		*/
 
+		if (!activate_init) {
+			startMillis = millis();
+			minuteMillis = startMillis;
+			startEnergy = pzem.energy(ip);
+			activate_init = 1;
+		}
 		digitalWrite(SSR_PIN, HIGH);
-		currentMillis = millis();
-		int elapseTime = (currentMillis - startMillis)/60000;
-		int remainingTime = interval/60000 - elapseTime;
 
-		if (currentMillis - startMillis < interval){
-			float v = pzem.voltage(ip);
-			float i = pzem.current(ip);
-			float p = pzem.power(ip);
+		if (millis() - startMillis < interval){
+			// float v = pzem.voltage(ip);
+			// float i = pzem.current(ip);
+			// float p = pzem.power(ip);
 			float e = pzem.energy(ip) - startEnergy;
-			float pf = (p/(v*i));
+
 			char buffer[5];
-			String powerFactor = dtostrf(pf , 4, 0, buffer);
 			String energys = dtostrf(e , 4, 0, buffer);
+			int elapseTime = (millis() - startMillis)/60000;
+			int remainingTime = interval/60000 - elapseTime;
 			certifiedScreen(String(remainingTime), energys);
 
-			if(currentMillis - minuteMillis >= 60000){
+			if(millis() - minuteMillis >= 60000){
 				String topicEnergy = String(machine_id) + "/state/usage";
 				mqttPublish(topicEnergy, energys, 1);
-				minuteMillis = currentMillis;
+				minuteMillis = millis();
 			}
 			if (remainingTime <= 3){
 				lcdBlink = 1;
@@ -58,13 +62,13 @@ void loop(){
 					lcdBlink = 0;
 					lcdBacklight = 255;
 					lcd.setBacklight(lcdBacklight);
-					startMillis = currentMillis;
+					startMillis = millis();
 				}
 			}
 		}
 
 		int stopButton = digitalRead(BUTTON_PIN);
-		if ((currentMillis-startMillis >= interval) || stopButton==1){
+		if ((millis()-startMillis >= interval) || stopButton==1){
 			float e = pzem.energy(ip) - startEnergy;
 			char buffer[5];
 			String energys = dtostrf(e , 4, 0, buffer);
@@ -111,10 +115,10 @@ void loop(){
 			delay(2500);
 		}
 
-		if (lcdBlink==1 && (currentMillis-lcdMillis >= 500)){
+		if (lcdBlink==1 && (millis()-lcdMillis >= 500)){
 			lcdBacklight = 255 - lcdBacklight;
 			lcd.setBacklight(lcdBacklight);
-			lcdMillis = currentMillis;
+			lcdMillis = millis();
 		}
 	}
 	else if (activate == 0) {
@@ -133,22 +137,22 @@ void loop(){
 		}
 		else {
 			/*
-			// test code
+			// test code - boot time
 			if (!bootTimePrinted) {
 				lcdPrint(String(millis()));
 				delay(3000);
 				bootTimePrinted = 1;
 			}
-			// test code
+			// test code - boot time
 			*/
 
 			welcomeScreen();
 			if (getCardUID(carduid) && strcmp(carduid, cur_carduid) != 0) {
 				/*
-				// test code
+				// test code - response time
 				readCardMillis = millis();
 				responseTimePrinted = 0;
-				// test code
+				// test code - response time
 				*/
 
 				strcpy(cur_carduid, carduid);

@@ -17,7 +17,7 @@ bool connectedToRaspi = 0, raspiResponse = 0;
 int failToConnect = 0;
 int connect_ID = 0;
 bool isBooting = 1;
-
+bool activate_init = 0;
 /*
 // test code
 bool bootTimePrinted = 0, responseTimePrinted = 1;

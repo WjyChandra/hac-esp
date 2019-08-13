@@ -92,11 +92,11 @@ void messageReceived(String &topic, String &payload) {
 	    	activate = 0;
 		}
 		else if (payload == "1"){
-			lcdPrint("Starting New Session");
+			activate_init = 0;
 			activate	= 1;
-			startMillis = millis();
-			minuteMillis = startMillis;
-			startEnergy = pzem.energy(ip);
+			// startMillis = millis();
+			// minuteMillis = startMillis;
+			// startEnergy = pzem.energy(ip);
 			raspiMillis = millis();
 			raspiResponse = 1;
 			connectedToRaspi = 1;
